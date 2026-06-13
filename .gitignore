@@ -22,3 +22,7 @@ npm-debug.log*
 # TypeScript build artifacts
 *.tsbuildinfo
 next-env.d.ts
+
+# Local AI playbook + editor config (not product)
+CLAUDE.md
+.claude/
