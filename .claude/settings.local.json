@@ -8,7 +8,8 @@
       "Bash(git -c user.name=MindLog -c user.email=aiops1@kedaara.com commit -q -m 'fix: raise token cap to 2048 \\(analysis JSON was truncating\\), UTC streak calc, bump Next 15.1.6->15.5.19 \\(CVE fix\\) *)",
       "Bash(git push *)",
       "Skill(h2k-coder-review)",
-      "Skill(h2k-coder-review:*)"
+      "Skill(h2k-coder-review:*)",
+      "Bash(git -c user.name=MindLog -c user.email=aiops1@kedaara.com commit -q -m 'fix\\(review\\): per-client rate limiting \\(Security\\) + chat grounding & dedup edge \\(Alignment\\) + finish a11y contrast *)"
     ]
   }
 }

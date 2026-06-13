@@ -64,7 +64,7 @@ export function JournalEditor({
             maxLength={5000}
             rows={6}
             placeholder="Write as freely as you like. No one else sees this."
-            className="w-full resize-y rounded-xl border border-[var(--hairline)] bg-white/70 px-4 py-3 text-[15px] leading-relaxed text-ink placeholder:text-ink/60"
+            className="w-full resize-y rounded-xl border border-[var(--hairline)] bg-white/70 px-4 py-3 text-[15px] leading-relaxed text-ink placeholder:text-ink/70"
           />
           <p className="mt-1 text-right text-xs text-ink/70" aria-live="polite">
             {body.length}/5000

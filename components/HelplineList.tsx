@@ -17,7 +17,7 @@ export function HelplineList({
             <span className="min-w-0">
               <span className="block font-semibold text-ink">{h.name}</span>
               {h.note ? (
-                <span className="block text-sm text-ink/60">{h.note}</span>
+                <span className="block text-sm text-ink/70">{h.note}</span>
               ) : null}
             </span>
             <span className="shrink-0 whitespace-nowrap font-bold text-clay-600">

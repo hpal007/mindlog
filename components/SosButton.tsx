@@ -68,7 +68,7 @@ export function SosButton() {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close"
-                className="rounded-lg px-2 py-1 text-xl leading-none text-ink/60 hover:text-ink"
+                className="rounded-lg px-2 py-1 text-xl leading-none text-ink/70 hover:text-ink"
               >
                 <span aria-hidden="true">×</span>
               </button>

@@ -21,7 +21,7 @@ import { db } from "@/lib/db";
 import { analyzeEntry } from "@/lib/ai/gemini";
 import { keywordRisk } from "@/lib/safety/classifier";
 import { recommendExercise } from "@/lib/library/recommend";
-import { checkRateLimit } from "@/lib/ratelimit";
+import { checkRateLimit, rateLimitKeyFromRequest } from "@/lib/ratelimit";
 import {
   DEMO_USER_ID,
   GEMINI_MODEL,
@@ -42,8 +42,8 @@ export async function POST(req: Request): Promise<Response> {
   const userId = DEMO_USER_ID;
 
   try {
-    // 1) Rate-limit paid (LLM) endpoint first.
-    const limit = await checkRateLimit(userId);
+    // 1) Rate-limit paid (LLM) endpoint first, per client.
+    const limit = await checkRateLimit(rateLimitKeyFromRequest(req));
     if (!limit.allowed) {
       return jsonError(429, "You're doing that a lot. Please try again shortly.");
     }

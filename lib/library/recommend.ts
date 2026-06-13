@@ -100,19 +100,30 @@ export function scoreExercise(
 // ---------------------------------------------------------------------------
 const DEDUP_THRESHOLD = 0.6;
 
+/** The existing active exercise `candidate` near-duplicates, or null if none. */
+export function findDuplicateExercise<T extends Pick<CopingExerciseRow, "title" | "technique" | "status">>(
+  candidate: Pick<CopingExercise, "title" | "technique">,
+  existing: T[],
+): T | null {
+  const candBlob = `${candidate.title} ${candidate.technique}`;
+  for (const e of existing) {
+    if (e.status !== "active") continue;
+    if (e.technique.trim().toLowerCase() === candidate.technique.trim().toLowerCase()) {
+      return e;
+    }
+    if (textSimilarity(candBlob, `${e.title} ${e.technique}`) >= DEDUP_THRESHOLD) {
+      return e;
+    }
+  }
+  return null;
+}
+
 /** True if `candidate` is a near-duplicate of any existing active exercise. */
 export function isDuplicateExercise(
   candidate: Pick<CopingExercise, "title" | "technique">,
   existing: Pick<CopingExerciseRow, "title" | "technique" | "status">[],
 ): boolean {
-  const candBlob = `${candidate.title} ${candidate.technique}`;
-  return existing.some((e) => {
-    if (e.status !== "active") return false;
-    if (e.technique.trim().toLowerCase() === candidate.technique.trim().toLowerCase()) {
-      return true;
-    }
-    return textSimilarity(candBlob, `${e.title} ${e.technique}`) >= DEDUP_THRESHOLD;
-  });
+  return findDuplicateExercise(candidate, existing) !== null;
 }
 
 // ---------------------------------------------------------------------------
@@ -171,17 +182,18 @@ export function makeRecommendExercise(
       const exercise = await generate(triggers, analysisSummary);
 
       // 3) Dedup gate — never pollute the library with a near-duplicate. If the
-      //    generated exercise duplicates an existing active one, recommend the
-      //    closest existing match instead of inserting.
-      if (isDuplicateExercise(exercise, exercises)) {
-        if (best) {
-          return {
-            kind: "match",
-            exerciseId: best.exercise.id,
-            reason: reasonForMatch(best.exercise, triggers),
-          };
-        }
-        // No fallback to recommend — surface the generated one rather than nothing.
+      //    generated exercise duplicates an existing active one, reuse the exact
+      //    exercise it duplicates (NOT persisted). Prefer the stronger
+      //    trigger-match when one exists, else the duplicated exercise itself —
+      //    so a near-duplicate is never inserted, even with no threshold match.
+      const duplicateOf = findDuplicateExercise(exercise, exercises);
+      if (duplicateOf) {
+        const reuse = best?.exercise ?? duplicateOf;
+        return {
+          kind: "match",
+          exerciseId: reuse.id,
+          reason: reasonForMatch(reuse, triggers),
+        };
       }
 
       return {

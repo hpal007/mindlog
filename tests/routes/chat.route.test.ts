@@ -18,7 +18,7 @@ const { streamChat, checkRateLimit, db } = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/ai/gemini", () => ({ streamChat, analyzeEntry: vi.fn(), generateExercise: vi.fn() }));
-vi.mock("@/lib/ratelimit", () => ({ checkRateLimit }));
+vi.mock("@/lib/ratelimit", () => ({ checkRateLimit, rateLimitKeyFromRequest: () => "00000000-0000-0000-0000-000000000001" }));
 vi.mock("@/lib/db", () => ({ db }));
 
 import { POST } from "@/app/api/chat/route";

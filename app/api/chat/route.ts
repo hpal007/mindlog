@@ -12,7 +12,7 @@ import { chatTurnSchema, crisisPayloadSchema } from "@/lib/schemas";
 import { db } from "@/lib/db";
 import { streamChat } from "@/lib/ai/gemini";
 import { keywordRisk } from "@/lib/safety/classifier";
-import { checkRateLimit } from "@/lib/ratelimit";
+import { checkRateLimit, rateLimitKeyFromRequest } from "@/lib/ratelimit";
 import {
   DEMO_USER_ID,
   HELPLINES,
@@ -23,15 +23,18 @@ import { jsonError } from "@/lib/http";
 export const runtime = "nodejs";
 export const maxDuration = 60; // allow Gemini streaming to run past the 10s default
 
-const RECENT_TRIGGER_ENTRIES = 5;
+// Widened so the companion still grounds in real triggers even if the few most
+// recent entries happen to lack analyses (the cold-start edge); the trigger list
+// is deduped and capped at 8 below, so the prompt stays lean regardless.
+const GROUNDING_LOOKBACK = 20;
 const RECENT_CHAT_TURNS = 10;
 
 export async function POST(req: Request): Promise<Response> {
   const userId = DEMO_USER_ID;
 
   try {
-    // 1) Rate-limit the paid endpoint.
-    const limit = await checkRateLimit(userId);
+    // 1) Rate-limit the paid endpoint, per client.
+    const limit = await checkRateLimit(rateLimitKeyFromRequest(req));
     if (!limit.allowed) {
       return jsonError(429, "You're sending messages quickly. Please pause a moment.");
     }
@@ -68,7 +71,7 @@ export async function POST(req: Request): Promise<Response> {
     await db.insertChatMessage(userId, "user", message, entryId);
 
     const [recent, history] = await Promise.all([
-      db.getRecentEntriesWithAnalyses(userId, RECENT_TRIGGER_ENTRIES),
+      db.getRecentEntriesWithAnalyses(userId, GROUNDING_LOOKBACK),
       db.getRecentChat(userId, RECENT_CHAT_TURNS),
     ]);
 

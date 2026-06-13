@@ -33,7 +33,7 @@ export function ExerciseCard({ exercise }: { exercise: RecommendedExercise }) {
           {CATEGORY_LABEL[exercise.category] ?? exercise.category}
         </span>
         {exercise.evidence_basis ? (
-          <span className="rounded-full border border-[var(--hairline)] px-2.5 py-0.5 text-xs font-medium text-ink/60">
+          <span className="rounded-full border border-[var(--hairline)] px-2.5 py-0.5 text-xs font-medium text-ink/70">
             {exercise.evidence_basis}
           </span>
         ) : null}

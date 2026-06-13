@@ -18,7 +18,7 @@ const { checkRateLimit, db } = vi.hoisted(() => ({
   checkRateLimit: vi.fn(),
   db: { applyFeedback: vi.fn() },
 }));
-vi.mock("@/lib/ratelimit", () => ({ checkRateLimit }));
+vi.mock("@/lib/ratelimit", () => ({ checkRateLimit, rateLimitKeyFromRequest: () => "00000000-0000-0000-0000-000000000001" }));
 vi.mock("@/lib/db", () => ({ db }));
 
 const REC_ID = "dddddddd-dddd-dddd-dddd-dddddddddddd";

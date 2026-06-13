@@ -122,7 +122,7 @@ export function ChatCompanion({ entryId }: { entryId?: string }) {
           rows={1}
           maxLength={2000}
           placeholder="Type a message…"
-          className="min-h-[2.75rem] flex-1 resize-none rounded-xl border border-[var(--hairline)] bg-white/70 px-4 py-2.5 text-[15px] text-ink placeholder:text-ink/60"
+          className="min-h-[2.75rem] flex-1 resize-none rounded-xl border border-[var(--hairline)] bg-white/70 px-4 py-2.5 text-[15px] text-ink placeholder:text-ink/70"
         />
         <button
           type="submit"

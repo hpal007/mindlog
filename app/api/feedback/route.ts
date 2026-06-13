@@ -7,7 +7,7 @@ import "server-only";
 
 import { feedbackInputSchema } from "@/lib/schemas";
 import { db } from "@/lib/db";
-import { checkRateLimit } from "@/lib/ratelimit";
+import { checkRateLimit, rateLimitKeyFromRequest } from "@/lib/ratelimit";
 import { DEMO_USER_ID } from "@/lib/constants";
 import { jsonError } from "@/lib/http";
 
@@ -17,7 +17,7 @@ export async function POST(req: Request): Promise<Response> {
   const userId = DEMO_USER_ID;
 
   try {
-    const { allowed } = await checkRateLimit(userId);
+    const { allowed } = await checkRateLimit(rateLimitKeyFromRequest(req));
     if (!allowed) return jsonError(429, "Too many requests. Please slow down a moment.");
 
     let raw: unknown;

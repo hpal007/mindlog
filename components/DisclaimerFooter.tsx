@@ -5,7 +5,7 @@ export function DisclaimerFooter() {
   return (
     <footer className="border-t border-[var(--hairline)] bg-[var(--paper)]">
       <div className="mx-auto max-w-3xl px-5 py-5">
-        <p className="text-xs leading-relaxed text-ink/60">
+        <p className="text-xs leading-relaxed text-ink/70">
           <span aria-hidden="true" className="mr-1">
             ⚠
           </span>

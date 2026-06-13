@@ -27,7 +27,7 @@ const { analyzeEntry, recommendExercise, checkRateLimit, db } = vi.hoisted(() =>
 
 vi.mock("@/lib/ai/gemini", () => ({ analyzeEntry, streamChat: vi.fn(), generateExercise: vi.fn() }));
 vi.mock("@/lib/library/recommend", () => ({ recommendExercise }));
-vi.mock("@/lib/ratelimit", () => ({ checkRateLimit }));
+vi.mock("@/lib/ratelimit", () => ({ checkRateLimit, rateLimitKeyFromRequest: () => "00000000-0000-0000-0000-000000000001" }));
 vi.mock("@/lib/db", () => ({ db }));
 
 // Import AFTER the mocks are registered.
