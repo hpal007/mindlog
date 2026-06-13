@@ -9,8 +9,10 @@ export const GEMINI_MODEL = "gemini-2.5-flash";
  *  not internal reasoning — keeps structured JSON reliable and latency low. */
 export const THINKING_CONFIG: { thinkingBudget: number } = { thinkingBudget: 0 };
 
-/** Hard cap on model output — efficiency (avoid runaway token spend / latency). */
-export const MAX_OUTPUT_TOKENS = 1024;
+/** Hard cap on model output — efficiency (avoid runaway token spend / latency).
+ *  2048 fits a rich multi-trigger structured analysis (incl. evidence spans,
+ *  emotions, themes, summary) without truncating the JSON; 1024 truncated it. */
+export const MAX_OUTPUT_TOKENS = 2048;
 
 /** Seeded demo session under the 1hr clock (no real auth). RLS still enforced. */
 export const DEMO_USER_ID =

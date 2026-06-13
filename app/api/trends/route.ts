@@ -74,21 +74,23 @@ function computeTopTriggers(rows: Joined[]): { label: string; count: number }[] 
 function computeStreak(timestamps: string[]): number {
   if (timestamps.length === 0) return 0;
 
+  // Keep everything in UTC day-space so it matches toDayKey (entries are stored
+  // as UTC timestamps); mixing local midnight with UTC keys dropped today's entry.
   const days = new Set(timestamps.map(toDayKey));
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const key = (d: Date) => d.toISOString().slice(0, 10);
+  const cursor = new Date();
+  cursor.setUTCHours(0, 0, 0, 0);
 
   // Allow the streak to "start" from today or yesterday (grace for not-yet-journaled today).
-  let cursor = new Date(today);
-  if (!days.has(toDayKey(cursor.toISOString()))) {
-    cursor.setDate(cursor.getDate() - 1);
-    if (!days.has(toDayKey(cursor.toISOString()))) return 0;
+  if (!days.has(key(cursor))) {
+    cursor.setUTCDate(cursor.getUTCDate() - 1);
+    if (!days.has(key(cursor))) return 0;
   }
 
   let streak = 0;
-  while (days.has(toDayKey(cursor.toISOString()))) {
+  while (days.has(key(cursor))) {
     streak += 1;
-    cursor.setDate(cursor.getDate() - 1);
+    cursor.setUTCDate(cursor.getUTCDate() - 1);
   }
   return streak;
 }
