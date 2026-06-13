@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Keep concurrent runs on the same ref from piling up.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Always-green core: typecheck + unit/route/component tests with coverage.
+  # The LLM is MOCKED in tests, so CI needs NO Gemini key and never hits the
+  # network. The RLS test self-skips here (no Supabase secrets) — see `rls` job.
+  # ---------------------------------------------------------------------------
+  test:
+    name: Typecheck + Tests + Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Unit + route + component tests (LLM mocked)
+        run: npm run test
+
+      - name: Coverage
+        run: npm run coverage
+
+      - name: Upload coverage summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-summary
+          path: coverage/coverage-summary.json
+          if-no-files-found: ignore
+
+  # ---------------------------------------------------------------------------
+  # RLS cross-user denial against REAL Postgres. This proves the per-user
+  # isolation security boundary (SPEC Acceptance #1) is genuine, not decoration.
+  #
+  # It runs ONLY when the Supabase secrets are configured on the repo, because
+  # the migrations target a Supabase project (auth.users + auth.uid() + GoTrue).
+  # A bare Postgres container can't satisfy the GoTrue auth surface the test
+  # signs in against, so we gate on a real (free-tier) Supabase project's
+  # secrets instead of risking a flaky service-container wiring that could red
+  # the compliance gate. Local runs and PRs from forks self-skip cleanly.
+  #
+  # To enable: add repo secrets SUPABASE_URL, SUPABASE_ANON_KEY,
+  # SUPABASE_SERVICE_ROLE_KEY (a throwaway test project with the migrations in
+  # supabase/migrations/ applied).
+  # ---------------------------------------------------------------------------
+  rls:
+    name: RLS cross-user denial (real Postgres)
+    runs-on: ubuntu-latest
+    needs: test
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: RLS denial test (skips if SUPABASE secrets absent)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: npx vitest run tests/routes/rls.test.ts

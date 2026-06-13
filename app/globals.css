@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   MindLog base styles. Warm, grounded, calm — a quiet companion at 1am.
+   AA-contrast body text, visible focus everywhere, motion + forced-colors safe.
+--------------------------------------------------------------------------- */
+
+:root {
+  /* Warm off-white paper, not clinical white. */
+  --paper: #f7f4ee;
+  --paper-raised: #fffdf8;
+  --hairline: #e7e0d4;
+}
+
+@layer base {
+  html {
+    /* No fixed tiny base — scales with user settings. */
+    font-size: 100%;
+  }
+
+  body {
+    background-color: var(--paper);
+    /* ink (#1c2433) on warm paper — well above AA for body + small text. */
+    color: #1c2433;
+    font-family: var(--font-sans), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100dvh;
+  }
+
+  /* Visible, calm focus ring on EVERY interactive element. */
+  :focus-visible {
+    outline: 3px solid #2f6149; /* sage-600 */
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Don't show the ring on mouse click, only keyboard. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background-color: #dcebe2; /* sage-100 */
+    color: #1c2433;
+  }
+}
+
+@layer components {
+  /* Soft, organic card — restrained, not the cookie-cutter shadow box. */
+  .paper-card {
+    background-color: var(--paper-raised);
+    border: 1px solid var(--hairline);
+    border-radius: 1.25rem;
+    box-shadow:
+      0 1px 2px rgba(28, 36, 51, 0.04),
+      0 8px 24px -16px rgba(28, 36, 51, 0.18);
+  }
+
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+/* Gentle ambient breathing animation for the timer ring. */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(0.82);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.animate-breathe {
+  animation: breathe 8s ease-in-out infinite;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise {
+  animation: rise 0.45s ease-out both;
+}
+
+/* Respect users who ask for less motion — kill all of it. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Forced-colors (Windows High Contrast): drop decorative gradients/clips,
+   restore system borders so nothing becomes invisible. */
+@media (forced-colors: active) {
+  .paper-card,
+  .forced-border {
+    border: 1px solid CanvasText;
+    box-shadow: none;
+  }
+  .forced-text {
+    -webkit-text-fill-color: CanvasText;
+    color: CanvasText;
+    background: none;
+  }
+  :focus-visible {
+    outline: 3px solid Highlight;
+  }
+}

@@ -1,7 +1,13 @@
 // LOCKED shared constants. Single source for cross-lane values. Do not duplicate.
 
-/** Gemini fast tier. Swap here if a newer flash model is confirmed at build time. */
-export const GEMINI_MODEL = "gemini-2.0-flash";
+/** Gemini fast tier. 2.5-flash is the current fast model (2.0-flash free-tier
+ *  quota is exhausted on this key). Paired with thinkingBudget:0 in lib/ai/gemini.ts
+ *  so structured-output token budget isn't consumed by thinking. */
+export const GEMINI_MODEL = "gemini-2.5-flash";
+
+/** Disable model "thinking" on 2.5 so the capped output budget goes to the answer,
+ *  not internal reasoning — keeps structured JSON reliable and latency low. */
+export const THINKING_CONFIG: { thinkingBudget: number } = { thinkingBudget: 0 };
 
 /** Hard cap on model output — efficiency (avoid runaway token spend / latency). */
 export const MAX_OUTPUT_TOKENS = 1024;

@@ -74,10 +74,5 @@ export interface DataAccess {
   ): Promise<void>;
 }
 
-// Lane A assigns the concrete implementation to this export.
-// Throwing stub keeps the build green until Lane A lands.
-export const db: DataAccess = new Proxy({} as DataAccess, {
-  get() {
-    throw new Error("DataAccess not implemented — Lane A (lib/db/supabase-data.ts) must wire it.");
-  },
-});
+// Lane A's concrete Supabase implementation (lib/db/supabase-data.ts).
+export { db } from "./supabase-data";
