@@ -21,6 +21,7 @@ import {
 import { jsonError } from "@/lib/http";
 
 export const runtime = "nodejs";
+export const maxDuration = 60; // allow Gemini streaming to run past the 10s default
 
 const RECENT_TRIGGER_ENTRIES = 5;
 const RECENT_CHAT_TURNS = 10;

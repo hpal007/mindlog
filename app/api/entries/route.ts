@@ -33,6 +33,7 @@ import type { EntryAnalysis } from "@/lib/schemas";
 import type { CopingExerciseRow } from "@/lib/db/types";
 
 export const runtime = "nodejs";
+export const maxDuration = 60; // allow Gemini streaming to run past the 10s default
 
 // ---------------------------------------------------------------------------
 // POST — orchestrate analysis → crisis / coping. Streams NDJSON.
