@@ -30,7 +30,7 @@ export function EmotionPicker({
   return (
     <fieldset>
       <legend className="mb-2 text-sm font-semibold text-ink">
-        What words fit today? <span className="font-normal text-ink/55">(optional)</span>
+        What words fit today? <span className="font-normal text-ink/70">(optional)</span>
       </legend>
       <div className="flex flex-wrap gap-2" role="group" aria-label="Emotion words">
         {EMOTIONS.map((tag) => {

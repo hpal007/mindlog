@@ -20,6 +20,10 @@ const config: Config = {
         clay: {
           400: "#d98a6a",
           500: "#c46a4a",
+          // Darker clay that clears AA 4.5:1 on white for small text and white text on it.
+          600: "#a8502f",
+          // Darker still for hover so white text never drops below its resting contrast.
+          700: "#8c3f23",
         },
       },
       fontFamily: {

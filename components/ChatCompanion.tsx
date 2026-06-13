@@ -81,7 +81,7 @@ export function ChatCompanion({ entryId }: { entryId?: string }) {
         aria-busy={busy}
       >
         {messages.length === 0 ? (
-          <p className="py-6 text-center text-sm text-ink/55">
+          <p className="py-6 text-center text-sm text-ink/70">
             I am here to listen. Tell me how things are going.
           </p>
         ) : null}
@@ -96,14 +96,14 @@ export function ChatCompanion({ entryId }: { entryId?: string }) {
           >
             {m.text ||
               (m.role === "assistant" && busy ? (
-                <span className="text-ink/50">thinking…</span>
+                <span className="text-ink/70">thinking…</span>
               ) : null)}
           </div>
         ))}
       </div>
 
       {error ? (
-        <p role="alert" className="mb-2 text-sm text-clay-500">
+        <p role="alert" className="mb-2 text-sm text-clay-600">
           Something went wrong. Please try again.
         </p>
       ) : null}
@@ -122,7 +122,7 @@ export function ChatCompanion({ entryId }: { entryId?: string }) {
           rows={1}
           maxLength={2000}
           placeholder="Type a message…"
-          className="min-h-[2.75rem] flex-1 resize-none rounded-xl border border-[var(--hairline)] bg-white/70 px-4 py-2.5 text-[15px] text-ink placeholder:text-ink/40"
+          className="min-h-[2.75rem] flex-1 resize-none rounded-xl border border-[var(--hairline)] bg-white/70 px-4 py-2.5 text-[15px] text-ink placeholder:text-ink/60"
         />
         <button
           type="submit"

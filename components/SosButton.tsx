@@ -38,7 +38,7 @@ export function SosButton() {
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-full border border-clay-500 bg-clay-500 px-4 py-1.5 text-sm font-bold text-white transition-colors hover:bg-clay-400"
+        className="rounded-full border border-clay-600 bg-clay-600 px-4 py-1.5 text-sm font-bold text-white transition-colors hover:bg-clay-700"
       >
         <span aria-hidden="true" className="mr-1">
           ♥

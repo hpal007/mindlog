@@ -11,7 +11,7 @@ export function DisclaimerFooter() {
           </span>
           {DISCLAIMER_TEXT}
         </p>
-        <p className="mt-1.5 text-xs text-ink/45">
+        <p className="mt-1.5 text-xs text-ink/70">
           If you are in immediate danger, contact local emergency services.
           MindLog stores entries privately to your account and never shares them.
         </p>

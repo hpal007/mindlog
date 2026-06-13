@@ -53,7 +53,7 @@ export function TrendsChart({ series }: { series: MoodPoint[] }) {
               stroke="#e7e0d4"
               strokeWidth={1}
             />
-            <text x={4} y={y(m) + 4} fontSize={10} fill="#1c243399">
+            <text x={4} y={y(m) + 4} fontSize={10} fill="#3a4556">
               {m}
             </text>
           </g>

@@ -38,7 +38,7 @@ export function ExerciseCard({ exercise }: { exercise: RecommendedExercise }) {
           </span>
         ) : null}
         {exercise.source === "ai_generated" ? (
-          <span className="rounded-full border border-clay-400/40 px-2.5 py-0.5 text-xs font-medium text-clay-500">
+          <span className="rounded-full border border-clay-400/40 px-2.5 py-0.5 text-xs font-medium text-clay-600">
             made for you
           </span>
         ) : null}

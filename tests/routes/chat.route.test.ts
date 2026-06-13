@@ -82,3 +82,12 @@ describe("POST /api/chat — validation", () => {
     expect(streamChat).not.toHaveBeenCalled();
   });
 });
+
+describe("POST /api/chat — rate limit 429", () => {
+  it("returns 429 and never calls the model when not allowed", async () => {
+    checkRateLimit.mockResolvedValue({ allowed: false, remaining: 0 });
+    const res = await POST(jsonRequest({ message: "I bombed my mock and feel low." }));
+    expect(res.status).toBe(429);
+    expect(streamChat).not.toHaveBeenCalled();
+  });
+});

@@ -13,7 +13,7 @@ export function TopTriggers({ triggers }: { triggers: TopTrigger[] }) {
         <li key={t.label} className="grid gap-1">
           <div className="flex items-baseline justify-between gap-3">
             <span className="font-medium text-ink">{t.label}</span>
-            <span className="text-sm text-ink/55">
+            <span className="text-sm text-ink/70">
               {t.count} {t.count === 1 ? "time" : "times"}
             </span>
           </div>

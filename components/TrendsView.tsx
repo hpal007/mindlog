@@ -37,7 +37,7 @@ export function TrendsView() {
 
   if (status === "loading") {
     return (
-      <p className="py-10 text-center text-ink/55" aria-live="polite" aria-busy="true">
+      <p className="py-10 text-center text-ink/70" aria-live="polite" aria-busy="true">
         Gathering your patterns…
       </p>
     );
@@ -45,7 +45,7 @@ export function TrendsView() {
 
   if (status === "error") {
     return (
-      <p role="alert" className="py-10 text-center text-clay-500">
+      <p role="alert" className="py-10 text-center text-clay-600">
         We could not load your trends just now. Please try again.
       </p>
     );
@@ -65,7 +65,7 @@ export function TrendsView() {
     <div className="grid gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <StreakBadge days={data.streakDays} />
-        <span className="text-sm text-ink/55">
+        <span className="text-sm text-ink/70">
           {data.entryCount} {data.entryCount === 1 ? "entry" : "entries"} so far
         </span>
       </div>

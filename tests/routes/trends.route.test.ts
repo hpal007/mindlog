@@ -82,6 +82,26 @@ d("GET /api/trends", () => {
     }
   });
 
+  it("N consecutive-day entries (incl. today) → streakDays === N", async () => {
+    // 4 entries on today, yesterday, 2- and 3-days-ago → a 4-day streak.
+    db.getRecentEntriesWithAnalyses.mockResolvedValue([
+      entry(0, 3, ["mock test"]),
+      entry(1, 3, ["sleep"]),
+      entry(2, 4, ["parents"]),
+      entry(3, 4, ["mock test"]),
+    ]);
+    db.listEntries.mockResolvedValue([{}, {}, {}, {}]);
+
+    const res = await GET();
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    const parsed = trendsResponseSchema.safeParse(body);
+    expect(parsed.success).toBe(true);
+    if (parsed.success) {
+      expect(parsed.data.streakDays).toBe(4);
+    }
+  });
+
   it("with no entries → 200, zeros, no crash", async () => {
     db.getRecentEntriesWithAnalyses.mockResolvedValue([]);
     db.listEntries.mockResolvedValue([]);

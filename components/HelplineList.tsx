@@ -20,7 +20,7 @@ export function HelplineList({
                 <span className="block text-sm text-ink/60">{h.note}</span>
               ) : null}
             </span>
-            <span className="shrink-0 whitespace-nowrap font-bold text-clay-500">
+            <span className="shrink-0 whitespace-nowrap font-bold text-clay-600">
               <span aria-hidden="true" className="mr-1">
                 ☎
               </span>

@@ -166,6 +166,7 @@ export const analyzeEntry: AnalyzeEntry = async function* (
         responseMimeType: "application/json",
         responseSchema: analysisResponseSchema,
         maxOutputTokens: MAX_OUTPUT_TOKENS,
+        thinkingConfig: thinking,
         temperature: 0.4,
       },
     });
@@ -198,6 +199,7 @@ export const analyzeEntry: AnalyzeEntry = async function* (
         responseMimeType: "application/json",
         responseSchema: analysisResponseSchema,
         maxOutputTokens: MAX_OUTPUT_TOKENS,
+        thinkingConfig: thinking,
         temperature: 0.2,
       },
     });
@@ -233,6 +235,7 @@ export const streamChat: StreamChat = async function* (args): AsyncGenerator<str
       config: {
         systemInstruction: buildChatSystemInstruction(args.triggers),
         maxOutputTokens: MAX_OUTPUT_TOKENS,
+        thinkingConfig: thinking,
         temperature: 0.7,
       },
     });

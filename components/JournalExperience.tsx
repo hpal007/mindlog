@@ -109,7 +109,7 @@ export function JournalExperience() {
             streaming={phase === "streaming"}
           />
           {error ? (
-            <p role="alert" className="text-sm text-clay-500">
+            <p role="alert" className="text-sm text-clay-600">
               Something went wrong while reflecting. Please try again.
             </p>
           ) : null}

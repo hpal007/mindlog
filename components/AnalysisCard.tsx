@@ -29,7 +29,7 @@ export function AnalysisCard({
         className="mt-2 min-h-[1.5rem] leading-relaxed text-ink/85"
       >
         {streaming && !liveSummary ? (
-          <span className="text-ink/50">Reading what you wrote…</span>
+          <span className="text-ink/70">Reading what you wrote…</span>
         ) : (
           (analysis?.summary || liveSummary)
         )}
@@ -44,7 +44,7 @@ export function AnalysisCard({
         <div className="mt-5 grid gap-5">
           {analysis.triggers.length > 0 ? (
             <div>
-              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-ink/55">
+              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-ink/70">
                 Possible triggers
               </h3>
               <TriggerChips triggers={analysis.triggers} />
@@ -53,7 +53,7 @@ export function AnalysisCard({
 
           {analysis.emotions.length > 0 ? (
             <div>
-              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-ink/55">
+              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-ink/70">
                 Emotions present
               </h3>
               <ul className="flex flex-wrap gap-2" role="list">
@@ -72,7 +72,7 @@ export function AnalysisCard({
 
           {analysis.themes.length > 0 ? (
             <div>
-              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-ink/55">
+              <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-ink/70">
                 Themes
               </h3>
               <ul className="flex flex-wrap gap-2" role="list">

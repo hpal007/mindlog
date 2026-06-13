@@ -64,9 +64,9 @@ export function JournalEditor({
             maxLength={5000}
             rows={6}
             placeholder="Write as freely as you like. No one else sees this."
-            className="w-full resize-y rounded-xl border border-[var(--hairline)] bg-white/70 px-4 py-3 text-[15px] leading-relaxed text-ink placeholder:text-ink/40"
+            className="w-full resize-y rounded-xl border border-[var(--hairline)] bg-white/70 px-4 py-3 text-[15px] leading-relaxed text-ink placeholder:text-ink/60"
           />
-          <p className="mt-1 text-right text-xs text-ink/45" aria-live="polite">
+          <p className="mt-1 text-right text-xs text-ink/70" aria-live="polite">
             {body.length}/5000
           </p>
         </div>
@@ -85,7 +85,7 @@ export function JournalEditor({
           {busy ? "Reflecting…" : "Reflect with me"}
         </button>
         {mood == null ? (
-          <p className="-mt-3 text-xs text-ink/55">
+          <p className="-mt-3 text-xs text-ink/70">
             Pick a mood and write a little to continue.
           </p>
         ) : null}

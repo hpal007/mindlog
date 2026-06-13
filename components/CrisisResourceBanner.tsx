@@ -33,7 +33,7 @@ export function CrisisResourceBanner({
     >
       <h2
         id="crisis-title"
-        className="text-xl font-extrabold text-clay-500"
+        className="text-xl font-extrabold text-clay-600"
       >
         Please reach out — right now
       </h2>

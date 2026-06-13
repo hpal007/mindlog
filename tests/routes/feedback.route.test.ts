@@ -51,6 +51,13 @@ d("POST /api/feedback", () => {
     const res = await POST(jsonRequest({ recommendation_id: "not-a-uuid", helpful: true }));
     expect(res.status).toBe(400);
   });
+
+  it("rate-limited → 429, applyFeedback not called", async () => {
+    checkRateLimit.mockResolvedValue({ allowed: false, remaining: 0 });
+    const res = await POST(jsonRequest({ recommendation_id: REC_ID, helpful: true, rating: 5 }));
+    expect(res.status).toBe(429);
+    expect(db.applyFeedback).not.toHaveBeenCalled();
+  });
 });
 
 if (!ROUTE_EXISTS) {

@@ -14,7 +14,7 @@ export function TriggerChips({ triggers }: { triggers: Trigger[] }) {
           <div className="flex items-center justify-between gap-3">
             <span className="font-semibold text-ink">{t.label}</span>
             <span
-              className="shrink-0 text-xs font-medium text-ink/50"
+              className="shrink-0 text-xs font-medium text-ink/70"
               aria-label={`confidence ${Math.round(t.confidence * 100)} percent`}
             >
               {Math.round(t.confidence * 100)}%

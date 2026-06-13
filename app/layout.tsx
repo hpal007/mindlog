@@ -49,7 +49,7 @@ export default function RootLayout({
               <span className="text-lg font-extrabold tracking-tight text-ink">
                 Mind<span className="text-sage-500">Log</span>
               </span>
-              <span className="hidden text-xs font-semibold text-ink/55 sm:inline">
+              <span className="hidden text-xs font-semibold text-ink/70 sm:inline">
                 a quiet companion
               </span>
             </a>

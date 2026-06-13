@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { JournalExperience } from "@/components/JournalExperience";
 import { ChatCompanion } from "@/components/ChatCompanion";
 import { TrendsView } from "@/components/TrendsView";
@@ -19,19 +19,52 @@ type TabId = (typeof TABS)[number]["id"];
  */
 export function HomeTabs() {
   const [active, setActive] = useState<TabId>("journal");
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  // WAI-ARIA tabs keyboard pattern: arrows move (wrapping), Home/End jump to
+  // ends, moving both selection and focus to the newly selected tab.
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const current = TABS.findIndex((t) => t.id === active);
+    let next = current;
+    switch (e.key) {
+      case "ArrowRight":
+        next = (current + 1) % TABS.length;
+        break;
+      case "ArrowLeft":
+        next = (current - 1 + TABS.length) % TABS.length;
+        break;
+      case "Home":
+        next = 0;
+        break;
+      case "End":
+        next = TABS.length - 1;
+        break;
+      default:
+        return;
+    }
+    const target = TABS[next];
+    if (!target) return;
+    e.preventDefault();
+    setActive(target.id);
+    tabRefs.current[next]?.focus();
+  };
 
   return (
     <div className="grid gap-6">
       <div
         role="tablist"
         aria-label="MindLog sections"
+        onKeyDown={onKeyDown}
         className="flex gap-1 rounded-2xl border border-[var(--hairline)] bg-white/50 p-1"
       >
-        {TABS.map((t) => {
+        {TABS.map((t, i) => {
           const selected = active === t.id;
           return (
             <button
               key={t.id}
+              ref={(el) => {
+                tabRefs.current[i] = el;
+              }}
               role="tab"
               id={`tab-${t.id}`}
               aria-selected={selected}

@@ -53,14 +53,14 @@ export function ExercisePlayer({
         <button
           type="button"
           onClick={close}
-          className="rounded-lg px-2 py-1 text-sm font-semibold text-ink/55 hover:text-ink"
+          className="rounded-lg px-2 py-1 text-sm font-semibold text-ink/70 hover:text-ink"
         >
           Close
         </button>
       </div>
 
       <p
-        className="mt-1 text-xs font-medium text-ink/50"
+        className="mt-1 text-xs font-medium text-ink/70"
         aria-live="polite"
       >
         Step {index + 1} of {steps.length}
