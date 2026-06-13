@@ -4,7 +4,7 @@ import { DISCLAIMER_TEXT } from "@/lib/constants";
 export function DisclaimerFooter() {
   return (
     <footer className="border-t border-[var(--hairline)] bg-[var(--paper)]">
-      <div className="mx-auto max-w-3xl px-5 py-5">
+      <div className="w-full px-5 py-5 sm:px-6 lg:px-8">
         <p className="text-xs leading-relaxed text-ink/70">
           <span aria-hidden="true" className="mr-1">
             ⚠

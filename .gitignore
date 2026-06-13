@@ -26,3 +26,4 @@ next-env.d.ts
 # Local AI playbook + editor config (not product)
 CLAUDE.md
 .claude/
+.gstack/

@@ -12,6 +12,8 @@
   --paper: #f7f4ee;
   --paper-raised: #fffdf8;
   --hairline: #e7e0d4;
+  /* Sticky header height — the left rail offsets/sizes itself against this. */
+  --header-h: 57px;
 }
 
 @layer base {
