@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(spec)",
+      "Skill(spec:*)",
+      "WebSearch"
+    ]
+  }
+}
