@@ -10,7 +10,6 @@ export async function readStreamText(res: Response): Promise<string> {
   const reader = body.getReader();
   const decoder = new TextDecoder();
   let out = "";
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;

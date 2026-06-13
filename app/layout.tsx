@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import { SosButton } from "@/components/SosButton";
@@ -41,7 +42,7 @@ export default function RootLayout({
 
         <header className="sticky top-0 z-30 border-b border-[var(--hairline)] bg-[var(--paper)]/85 backdrop-blur">
           <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3.5">
-            <a
+            <Link
               href="/"
               className="flex items-baseline gap-2 rounded-lg"
               aria-label="MindLog home"
@@ -52,7 +53,7 @@ export default function RootLayout({
               <span className="hidden text-xs font-semibold text-ink/70 sm:inline">
                 a quiet companion
               </span>
-            </a>
+            </Link>
             <SosButton />
           </div>
         </header>

@@ -17,7 +17,13 @@
       "Bash(curl -s -N -X POST http://localhost:3100/api/entries -H 'Content-Type: application/json' -H 'x-forwarded-for: 198.51.100.20' -d '{\"body\":\"My breathing gets shallow and my heart races right before every exam. I just need to calm down.\",\"mood_score\":3,\"mood_tags\":[\"anxious\"]}')",
       "Bash(python3 -c ' *)",
       "Read(//private/tmp/**)",
-      "Bash(git -c user.name=MindLog -c user.email=aiops1@kedaara.com commit -q -m 'perf: stream readable reflection \\(not raw JSON\\), drop redundant retry LLM call, atomic usage, parallel DB *)"
+      "Bash(git -c user.name=MindLog -c user.email=aiops1@kedaara.com commit -q -m 'perf: stream readable reflection \\(not raw JSON\\), drop redundant retry LLM call, atomic usage, parallel DB *)",
+      "Bash(npm view *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(npx tsc *)",
+      "Bash(echo \"tsc exit=$?\")"
     ]
   }
 }
