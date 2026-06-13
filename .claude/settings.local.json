@@ -9,7 +9,15 @@
       "Bash(git push *)",
       "Skill(h2k-coder-review)",
       "Skill(h2k-coder-review:*)",
-      "Bash(git -c user.name=MindLog -c user.email=aiops1@kedaara.com commit -q -m 'fix\\(review\\): per-client rate limiting \\(Security\\) + chat grounding & dedup edge \\(Alignment\\) + finish a11y contrast *)"
+      "Bash(git -c user.name=MindLog -c user.email=aiops1@kedaara.com commit -q -m 'fix\\(review\\): per-client rate limiting \\(Security\\) + chat grounding & dedup edge \\(Alignment\\) + finish a11y contrast *)",
+      "WebFetch(domain:hack2skill.com)",
+      "Bash(grep -nE '^#{1,3} ' README.md)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:internshala.com)",
+      "Bash(curl -s -N -X POST http://localhost:3100/api/entries -H 'Content-Type: application/json' -H 'x-forwarded-for: 198.51.100.20' -d '{\"body\":\"My breathing gets shallow and my heart races right before every exam. I just need to calm down.\",\"mood_score\":3,\"mood_tags\":[\"anxious\"]}')",
+      "Bash(python3 -c ' *)",
+      "Read(//private/tmp/**)",
+      "Bash(git -c user.name=MindLog -c user.email=aiops1@kedaara.com commit -q -m 'perf: stream readable reflection \\(not raw JSON\\), drop redundant retry LLM call, atomic usage, parallel DB *)"
     ]
   }
 }

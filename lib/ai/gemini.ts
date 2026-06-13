@@ -47,9 +47,17 @@ function ai(): GoogleGenAI {
 
 // --- Gemini response schemas (hand-built to avoid SDK-version drift) ----------
 // These constrain the model; the Zod schemas in lib/schemas are the final gate.
+// `summary` is intentionally generated FIRST (propertyOrdering) so the warm,
+// human-readable reflection streams to the student immediately while the
+// structured fields are still being produced (see analyzeEntry's summary streamer).
 const analysisResponseSchema: Schema = {
   type: Type.OBJECT,
   properties: {
+    summary: {
+      type: Type.STRING,
+      description: "One warm, non-clinical sentence reflecting what the student shared.",
+    },
+    risk_level: { type: Type.STRING, enum: ["none", "elevated", "acute"] },
     triggers: {
       type: Type.ARRAY,
       maxItems: "8",
@@ -79,13 +87,9 @@ const analysisResponseSchema: Schema = {
       },
     },
     themes: { type: Type.ARRAY, maxItems: "8", items: { type: Type.STRING } },
-    risk_level: { type: Type.STRING, enum: ["none", "elevated", "acute"] },
-    summary: {
-      type: Type.STRING,
-      description: "One warm, non-clinical sentence reflecting what the student shared.",
-    },
   },
-  required: ["triggers", "emotions", "themes", "risk_level", "summary"],
+  propertyOrdering: ["summary", "risk_level", "triggers", "emotions", "themes"],
+  required: ["summary", "risk_level", "triggers", "emotions", "themes"],
 };
 
 const exerciseResponseSchema: Schema = {
@@ -149,8 +153,60 @@ function fallbackAnalysis(): EntryAnalysis {
   });
 }
 
+/**
+ * Incrementally extracts the value of the leading `summary` JSON string field
+ * from a growing raw buffer, returning only the NEWLY-available decoded text on
+ * each call. Lets us stream the warm human reflection to the student cleanly
+ * (no raw JSON on screen) from the same single structured call. Once the field's
+ * closing quote arrives it stops — later fields (triggers/emotions) aren't shown.
+ */
+function makeSummaryStreamer(): (acc: string) => string {
+  let valueStart = -1; // index of the first char of the summary string value
+  let emitted = 0; // count of decoded chars already returned
+  let done = false;
+
+  return (acc: string): string => {
+    if (done) return "";
+    if (valueStart === -1) {
+      const key = acc.indexOf('"summary"');
+      if (key === -1) return "";
+      const colon = acc.indexOf(":", key + 9);
+      if (colon === -1) return "";
+      const openQuote = acc.indexOf('"', colon + 1);
+      if (openQuote === -1) return "";
+      valueStart = openQuote + 1;
+    }
+
+    let decoded = "";
+    let closed = false;
+    for (let i = valueStart; i < acc.length; i++) {
+      const c = acc[i];
+      if (c === "\\") {
+        const next = acc[i + 1];
+        if (next === undefined) break; // incomplete escape — wait for more
+        decoded += next === "n" ? "\n" : next === "t" ? " " : next;
+        i++;
+        continue;
+      }
+      if (c === '"') {
+        closed = true;
+        break;
+      }
+      decoded += c;
+    }
+
+    const delta = decoded.slice(emitted);
+    emitted = decoded.length;
+    if (closed) done = true;
+    return delta;
+  };
+}
+
 // =============================================================================
-// analyzeEntry — ONE structured streaming call. Streams tokens, then validates.
+// analyzeEntry — ONE structured streaming call. Streams the human-readable
+// reflection cleanly as it generates, then yields the validated structured
+// analysis. No second model call: on a parse miss we salvage the buffer locally
+// (avoids a redundant full LLM re-generation) and only then fall back.
 // =============================================================================
 export const analyzeEntry: AnalyzeEntry = async function* (
   text: string,
@@ -171,44 +227,26 @@ export const analyzeEntry: AnalyzeEntry = async function* (
       },
     });
 
-    // Real streaming: forward each delta to the client as it arrives so the UI
-    // fills progressively rather than blocking on the full response.
+    // Stream only the readable `summary` field as it arrives (the model emits it
+    // first), so the student sees a warm sentence type out — not raw JSON.
+    const nextSummary = makeSummaryStreamer();
     for await (const chunk of stream) {
       const delta = chunk.text;
-      if (delta) {
-        accumulated += delta;
-        yield { type: "token", text: delta };
-      }
+      if (!delta) continue;
+      accumulated += delta;
+      const readable = nextSummary(accumulated);
+      if (readable) yield { type: "token", text: readable };
     }
 
-    const analysis = entryAnalysisSchema.parse(safeJsonParse(accumulated));
-    yield { type: "analysis", analysis };
-    return;
+    yield { type: "analysis", analysis: entryAnalysisSchema.parse(safeJsonParse(accumulated)) };
   } catch {
-    // fall through to one non-streaming retry
-  }
-
-  // ONE targeted retry (non-streaming) — cheaper than re-streaming, recovers
-  // transient parse/transport failures without a full second generation loop.
-  try {
-    const res = await ai().models.generateContent({
-      model: GEMINI_MODEL,
-      contents: buildAnalysisPrompt(text),
-      config: {
-        systemInstruction: ANALYSIS_SYSTEM_INSTRUCTION,
-        responseMimeType: "application/json",
-        responseSchema: analysisResponseSchema,
-        maxOutputTokens: MAX_OUTPUT_TOKENS,
-        thinkingConfig: thinking,
-        temperature: 0.2,
-      },
-    });
-    const analysis = entryAnalysisSchema.parse(safeJsonParse(res.text ?? ""));
-    yield { type: "analysis", analysis };
-    return;
-  } catch {
-    // Total failure — never hard-crash the app; emit a safe fallback.
-    yield { type: "analysis", analysis: fallbackAnalysis() };
+    // Parse/transport miss: salvage what streamed (brace extraction in
+    // safeJsonParse) WITHOUT a second model call; only fall back if unsalvageable.
+    try {
+      yield { type: "analysis", analysis: entryAnalysisSchema.parse(safeJsonParse(accumulated)) };
+    } catch {
+      yield { type: "analysis", analysis: fallbackAnalysis() };
+    }
   }
 };
 

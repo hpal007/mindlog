@@ -225,20 +225,12 @@ export const db: DataAccess = {
   },
 
   async incrementUsage(exerciseId): Promise<void> {
-    // Read-modify-write is acceptable here: usage_count is a soft popularity
-    // signal, not a correctness-critical counter.
-    const { data, error } = await client()
-      .from("coping_exercises")
-      .select("usage_count")
-      .eq("id", exerciseId)
-      .single();
-    if (error || !data) fail("incrementUsage(read)", error);
-    const next = ((data.usage_count as number | null) ?? 0) + 1;
-    const { error: uErr } = await client()
-      .from("coping_exercises")
-      .update({ usage_count: next })
-      .eq("id", exerciseId);
-    if (uErr) fail("incrementUsage(update)", uErr);
+    // Atomic in-database bump (see 0005_atomic_usage.sql): one round-trip, no
+    // read, no lost-update race under concurrent recommendations.
+    const { error } = await client().rpc("increment_exercise_usage", {
+      p_exercise_id: exerciseId,
+    });
+    if (error) fail("incrementUsage", error);
   },
 
   // ----------------------------- recommendations ----------------------------

@@ -130,18 +130,14 @@ export async function POST(req: Request): Promise<Response> {
           }
 
           // --- NOT ACUTE: persist analysis, then recommend a coping exercise. ---
-          const analysisRow = await db.insertAnalysis(
-            userId,
-            entry.id,
-            persistedAnalysis,
-            GEMINI_MODEL,
-          );
+          // The active-exercise fetch is independent of the analysis insert, so
+          // kick it off concurrently to overlap its latency with the write.
+          const exercisesPromise = db.getActiveExercises();
 
-          const recommendation = await buildRecommendation(
-            userId,
-            entry.id,
-            persistedAnalysis,
-          );
+          const [analysisRow, recommendation] = await Promise.all([
+            db.insertAnalysis(userId, entry.id, persistedAnalysis, GEMINI_MODEL),
+            buildRecommendation(userId, entry.id, persistedAnalysis, exercisesPromise),
+          ]);
 
           const result: EntriesResult = entriesResultSchema.parse({
             analysisId: analysisRow.id,
@@ -187,9 +183,10 @@ async function buildRecommendation(
   userId: string,
   entryId: string,
   analysis: EntryAnalysis,
+  exercisesPromise: Promise<CopingExerciseRow[]>,
 ): Promise<RecommendedExercise | null> {
   try {
-    const exercises = await db.getActiveExercises();
+    const exercises = await exercisesPromise;
     const triggers = analysis.triggers.map((t) => t.label);
 
     const decision = await recommendExercise({
